@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brick Soling Material Estimator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to complement Tailwind */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .calculator-card {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .result-item {
+            border-bottom: 1px solid #e5e7eb; /* gray-200 */
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        /* Hide number input spinners */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="calculator-card max-w-4xl w-full bg-white p-6 sm:p-8 rounded-2xl">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Brick Soling Material Estimator</h1>
+            <p class="text-gray-500 mt-2">Calculate the required bricks and sand for your project.</p>
+        </div>
+
+        <!-- Main Grid for Inputs and Results -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            <!-- Input Section -->
+            <div class="space-y-4">
+                <h2 class="text-xl font-semibold text-gray-700 border-b pb-2">Inputs</h2>
+
+                <!-- Brick Dimensions -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="brickLength" class="block text-sm font-medium text-gray-600">Brick Length (in)</label>
+                        <input type="number" id="brickLength" value="9" placeholder="e.g., 9" class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="brickWidth" class="block text-sm font-medium text-gray-600">Brick Width (in)</label>
+                        <input type="number" id="brickWidth" value="4.5" placeholder="e.g., 4.5" class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+
+                <!-- Soling Area Calculation Method -->
+                <div>
+                    <span class="block text-sm font-medium text-gray-600 mb-2">Soling Area Method</span>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center">
+                            <input type="radio" id="areaByLWH" name="areaMethod" value="lwh" checked class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                            <label for="areaByLWH" class="ml-2 block text-sm text-gray-900">Length & Width</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="radio" id="areaByTotal" name="areaMethod" value="total" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                            <label for="areaByTotal" class="ml-2 block text-sm text-gray-900">Total Area</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Area Inputs (Conditional) -->
+                <div id="areaInputsLWH" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="solingLength" class="block text-sm font-medium text-gray-600">Soling Length (ft)</label>
+                        <input type="number" id="solingLength" placeholder="e.g., 20" class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="solingWidth" class="block text-sm font-medium text-gray-600">Soling Width (ft)</label>
+                        <input type="number" id="solingWidth" placeholder="e.g., 15" class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+                <div id="areaInputTotal" class="hidden">
+                     <label for="totalArea" class="block text-sm font-medium text-gray-600">Total Area (sq.ft)</label>
+                     <input type="number" id="totalArea" placeholder="e.g., 300" class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+
+                <!-- Other Inputs -->
+                <div>
+                    <label for="beddingThickness" class="block text-sm font-medium text-gray-600">Bedding Thickness (in)</label>
+                    <input type="number" id="beddingThickness" value="1" placeholder="e.g., 1" class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                 <div>
+                    <label for="wastage" class="block text-sm font-medium text-gray-600">Wastage (%)</label>
+                    <select id="wastage" class="mt-1 block w-full bg-gray-50 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="0">0%</option>
+                        <option value="1">1%</option>
+                        <option value="2">2%</option>
+                        <option value="3">3%</option>
+                        <option value="4">4%</option>
+                        <option value="5">5%</option>
+                        <option value="6">6%</option>
+                        <option value="7">7%</option>
+                        <option value="8">8%</option>
+                        <option value="9">9%</option>
+                        <option value="10" selected>10%</option>
+                    </select>
+                </div>
+                
+                <!-- Calculate Button -->
+                <button id="calculateBtn" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 ease-in-out transform hover:scale-105">
+                    Calculate
+                </button>
+            </div>
+
+            <!-- Results Section -->
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h2 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-4">Results</h2>
+                <div id="results" class="space-y-3">
+                    <p class="text-gray-500 text-center py-8">Your results will be displayed here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Element References
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resultsDiv = document.getElementById('results');
+        
+        const areaMethodRadios = document.getElementsByName('areaMethod');
+        const areaInputsLWH = document.getElementById('areaInputsLWH');
+        const areaInputTotal = document.getElementById('areaInputTotal');
+
+        // --- Event Listeners ---
+
+        // Toggle area input fields based on selected method
+        areaMethodRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                if (radio.value === 'lwh') {
+                    areaInputsLWH.classList.remove('hidden');
+                    areaInputTotal.classList.add('hidden');
+                } else {
+                    areaInputsLWH.classList.add('hidden');
+                    areaInputTotal.classList.remove('hidden');
+                }
+            });
+        });
+
+        // Main calculation logic on button click
+        calculateBtn.addEventListener('click', () => {
+            // Get input values and parse them as floats, providing defaults
+            const brickLength = parseFloat(document.getElementById('brickLength').value) || 9.0;
+            const brickWidth = parseFloat(document.getElementById('brickWidth').value) || 4.5;
+            const beddingThickness = parseFloat(document.getElementById('beddingThickness').value) || 1.0;
+            const wastage = parseFloat(document.getElementById('wastage').value);
+            
+            let areaSqFt = 0;
+            const selectedAreaMethod = document.querySelector('input[name="areaMethod"]:checked').value;
+
+            // Calculate total area based on the selected method
+            if (selectedAreaMethod === 'lwh') {
+                const solingLength = parseFloat(document.getElementById('solingLength').value) || 0;
+                const solingWidth = parseFloat(document.getElementById('solingWidth').value) || 0;
+                areaSqFt = solingLength * solingWidth;
+            } else {
+                areaSqFt = parseFloat(document.getElementById('totalArea').value) || 0;
+            }
+
+            // --- Validation ---
+            if (areaSqFt <= 0 || brickLength <= 0 || brickWidth <= 0) {
+                resultsDiv.innerHTML = `<p class="text-red-500 text-center font-medium p-4">Please enter valid dimensions and area.</p>`;
+                return;
+            }
+
+            // --- Calculations ---
+            const brickAreaSqFt = (brickLength * brickWidth) / 144;
+            const bricksWithoutWastage = areaSqFt / brickAreaSqFt;
+            const totalBricks = Math.ceil(bricksWithoutWastage * (1 + wastage / 100));
+
+            const sandVolumeCuFt = areaSqFt * (beddingThickness / 12);
+            const sandVolumeCuYd = sandVolumeCuFt / 27;
+            const sandWeightTonnes = sandVolumeCuYd * 1.223;
+
+            // --- Display Results ---
+            displayResults({
+                totalBricks: totalBricks.toLocaleString(),
+                sandVolumeCuFt: sandVolumeCuFt.toFixed(2),
+                sandVolumeCuYd: sandVolumeCuYd.toFixed(2),
+                sandWeightTonnes: sandWeightTonnes.toFixed(2)
+            });
+        });
+        
+        /**
+         * Renders the calculated results in the results division.
+         * @param {object} data - The calculated results.
+         */
+        function displayResults(data) {
+            resultsDiv.innerHTML = `
+                <div class="result-item flex justify-between items-center py-3">
+                    <span class="text-gray-600 font-medium">Total Bricks Required:</span>
+                    <span class="text-indigo-600 font-bold text-lg">${data.totalBricks}</span>
+                </div>
+                <div class="result-item flex justify-between items-center py-3">
+                    <span class="text-gray-600 font-medium">Sand Volume (cu.ft):</span>
+                    <span class="text-indigo-600 font-bold text-lg">${data.sandVolumeCuFt}</span>
+                </div>
+                <div class="result-item flex justify-between items-center py-3">
+                    <span class="text-gray-600 font-medium">Sand Volume (cu.yd):</span>
+                    <span class="text-indigo-600 font-bold text-lg">${data.sandVolumeCuYd}</span>
+                </div>
+                <div class="result-item flex justify-between items-center py-3">
+                    <span class="text-gray-600 font-medium">Sand Weight (approx. tonnes):</span>
+                    <span class="text-indigo-600 font-bold text-lg">${data.sandWeightTonnes}</span>
+                </div>
+            `;
+        }
+
+    </script>
+
+</body>
+</html>
+
+
